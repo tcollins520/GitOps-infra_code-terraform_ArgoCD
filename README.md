@@ -1,276 +1,201 @@
-# 🚀 End-to-End GitOps Platform on AWS EKS
+The infrastructure supports:
 
-## 📌 Project Overview
+AWS EKS Kubernetes cluster
+GitOps deployments with ArgoCD
+Helm-based application deployments
+AWS ALB Ingress Controller
+HTTPS with AWS ACM
+Persistent storage using EBS CSI Driver
+Route53 DNS integration
 
-This project demonstrates a full production-style GitOps deployment platform built on AWS using:
+This infrastructure repository works together with:
 
-* Terraform Infrastructure as Code (IaC)
-* AWS EKS (Elastic Kubernetes Service)
-* GitHub Actions CI/CD
-* Amazon ECR
-* Helm Charts
-* ArgoCD GitOps
-* AWS Load Balancer Controller
-* Route53 DNS
-* AWS ACM HTTPS Certificates
-* EBS CSI Driver for Persistent Storage
+Application CI/CD repository
+Helm GitOps repository
+ArgoCD continuous deployment
 
-The platform automatically builds, pushes, and deploys a Java application to Kubernetes using GitOps workflows.
+Terraform
+    ↓
+AWS Infrastructure
+    ↓
+VPC + Networking
+    ↓
+AWS EKS Cluster
+    ↓
+Managed Node Groups
+    ↓
+OIDC / IRSA
+    ↓
+EBS CSI Driver
+    ↓
+AWS Load Balancer Controller
+    ↓
+ArgoCD + Helm GitOps
 
----
+⚙️ Technologies Used
+Category	Technologies
+Cloud Provider	AWS
+Infrastructure as Code	Terraform
+Container Orchestration	Kubernetes
+Managed Kubernetes	AWS EKS
+Networking	VPC, Subnets, Route Tables
+Storage	AWS EBS CSI Driver
+IAM	IRSA / OIDC
+GitOps	ArgoCD
+Ingress	AWS Load Balancer Controller
+DNS	Route53
+SSL/TLS	AWS ACM
+☁️ Infrastructure Provisioned
 
-# 🏗️ Architecture
+Terraform provisions:
 
-```text
-Developer Push
-       ↓
-GitHub Actions CI Pipeline
-       ↓
-Docker Image Build
-       ↓
-Push Image to Amazon ECR
-       ↓
-Update Helm values.yaml
-       ↓
-ArgoCD Detects Git Change
-       ↓
-Helm Deployment to AWS EKS
-       ↓
-AWS ALB Ingress + Route53 + ACM HTTPS
-       ↓
-Live Kubernetes Application
-```
-
----
-
-# ⚙️ Technologies Used
-
-| Category           | Technologies                 |
-| ------------------ | ---------------------------- |
-| Cloud              | AWS                          |
-| Infrastructure     | Terraform                    |
-| Kubernetes         | AWS EKS                      |
-| CI/CD              | GitHub Actions               |
-| GitOps             | ArgoCD                       |
-| Packaging          | Helm                         |
-| Containerization   | Docker                       |
-| Registry           | Amazon ECR                   |
-| Ingress            | AWS Load Balancer Controller |
-| DNS                | Route53                      |
-| SSL/TLS            | AWS ACM                      |
-| Persistent Storage | EBS CSI Driver               |
-| Application        | Java                         |
-
----
-
-# ☁️ Infrastructure Provisioned with Terraform
-
-The Terraform configuration provisions:
-
-* VPC
-* Public Subnets
-* Internet Gateway
-* Route Tables
-* EKS Cluster
-* EKS Node Group
-* IAM Roles & Policies
-* OIDC Provider for IRSA
-* EKS Access Entries
-* Security Groups
-* EBS CSI Driver IAM Role
-
----
-
-# 🔐 Security Features
-
-* IAM Roles for Service Accounts (IRSA)
-* HTTPS secured using AWS ACM certificates
-* Route53 custom DNS records
-* Kubernetes Secrets
-* GitHub Secrets for CI/CD authentication
-
----
-
-# 🔄 CI/CD Workflow
-
-GitHub Actions pipeline performs:
-
-1. Checkout application source code
-2. Build Java application with Maven
-3. Run SonarQube code analysis
-4. Build Docker image
-5. Push Docker image to Amazon ECR
-6. Update Helm values.yaml image tag
-7. Push changes to Helm GitOps repository
-8. ArgoCD automatically syncs deployment to Kubernetes
-
----
-
-# 📦 GitOps Workflow
-
-ArgoCD continuously monitors the Helm GitOps repository.
-
-Whenever GitHub Actions updates the image tag:
-
-* ArgoCD detects the Git commit
-* Automatically syncs Kubernetes manifests
-* Deploys the latest application version to EKS
-
----
-
-# 🌐 Ingress & HTTPS
-
-The application is exposed publicly using:
-
-* AWS Application Load Balancer (ALB)
-* Kubernetes Ingress
-* Route53 DNS
-* AWS ACM SSL Certificates
-
-Example:
-
-```text
-https://vproappgitopsargocd.tcapp.xyz
-```
-
----
-
-# 💾 Persistent Storage
-
-MySQL database persistence is configured using:
-
-* Kubernetes PersistentVolumeClaim (PVC)
-* AWS EBS volumes
-* EBS CSI Driver
-
----
-
-# 📁 Repository Structure
-
-## Infrastructure Repository
-
-```text
-GitOps-infracode-terraform_github-actions/
+Networking
+VPC
+Public Subnets
+Internet Gateway
+Route Tables
+Route Table Associations
+Kubernetes Platform
+AWS EKS Cluster
+Managed Node Group
+Kubernetes Access Configuration
+IAM & Security
+IAM Roles
+IAM Policies
+OIDC Provider
+IRSA Configuration
+EKS Access Entries
+Storage
+EBS CSI Driver IAM Role
+Persistent Storage Support
+Load Balancing
+AWS Load Balancer Controller support
+Public ALB ingress support
+🔐 Security Features
+IAM Roles for Service Accounts (IRSA)
+OIDC federation
+HTTPS using ACM certificates
+Kubernetes RBAC integration
+Terraform-managed access entries
+Least privilege IAM policies
+📁 Repository Structure
+GitOps-infra_code-terraform_ArgoCD/
 ├── main.tf
 ├── variables.tf
 ├── outputs.tf
 ├── provider.tf
+├── terraform.tfvars
+├── vpc.tf
 ├── eks.tf
 ├── iam.tf
-└── networking.tf
-```
-
-## Application Repository
-
-```text
-GitOps-appcode_github-actions/
-├── .github/workflows/
-├── Dockerfile
-├── pom.xml
-└── src/
-```
-
-## Helm GitOps Repository
-
-```text
-GitOps-helm-ArgoCD/
-├── helm/
-│   └── vproappchartsArgo/
-│       ├── Chart.yaml
-│       ├── values.yaml
-│       └── templates/
-```
-
----
-
-# 🚀 Deployment Steps
-
-## 1. Provision Infrastructure
-
-```bash
+├── nodegroup.tf
+└── backend.tf
+🚀 Deployment Steps
+1. Clone Repository
+git clone https://github.com/tcollins520/GitOps-infra_code-terraform_ArgoCD.git
+cd GitOps-infra_code-terraform_ArgoCD
+2. Initialize Terraform
 terraform init
+3. Review Terraform Plan
 terraform plan
+4. Provision Infrastructure
 terraform apply
-```
 
-## 2. Configure kubectl
+Type:
 
-```bash
-aws eks update-kubeconfig --name vprofile-eks-cluster --region us-east-1
-```
+yes
 
-## 3. Install ArgoCD
+when prompted.
 
-```bash
-kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
-```
+5. Configure kubectl
+aws eks update-kubeconfig \
+--name vprofile-eks-cluster \
+--region us-east-1
+6. Verify EKS Cluster
+kubectl get nodes
+🔄 GitOps Integration
 
-## 4. Install AWS Load Balancer Controller
+This infrastructure repository integrates with:
 
-```bash
-helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
-  -n kube-system
-```
+Repository	Purpose
+GitOps-appcode_github-actions	CI/CD Pipeline
+GitOps-helm-ArgoCD	Helm GitOps Deployments
 
-## 5. Deploy Application via ArgoCD
+ArgoCD continuously monitors the Helm repository and deploys updates automatically to the EKS cluster.
 
-```bash
-argocd app create vprofile
-argocd app sync vprofile
-```
+💾 Persistent Storage
 
----
+Persistent storage is configured using:
 
-# 🛠️ Troubleshooting Performed
+AWS EBS volumes
+EBS CSI Driver
+Kubernetes PersistentVolumeClaims
 
-During implementation, several production-style issues were identified and resolved:
+Example StorageClass:
 
-* ArgoCD gRPC/Ingress connectivity issues
-* Helm templating errors
-* YAML indentation issues
-* Missing apiVersion values
-* PVC binding failures
-* EKS RBAC authorization problems
-* Route53 DNS propagation issues
-* ALB ingress configuration problems
-* GitHub Actions authentication issues
-* EBS CSI dynamic provisioning issues
+gp2
+gp3 (optional)
+🌐 Ingress & DNS
 
----
+The platform supports:
 
-# 🎯 Key Skills Demonstrated
+AWS ALB Ingress Controller
+Route53 custom domains
+HTTPS with AWS ACM certificates
 
-* Kubernetes Administration
-* AWS Cloud Engineering
-* Terraform IaC
-* GitOps Implementation
-* CI/CD Automation
-* Helm Chart Development
-* Kubernetes Ingress & Networking
-* Persistent Storage Management
-* IAM & IRSA Configuration
-* Troubleshooting Production Issues
+Example:
 
----
+https://vproappgitopsargocd.tcapp.xyz
+🛠️ Troubleshooting Performed
 
-# 📈 Future Improvements
+During implementation, several real-world infrastructure issues were resolved:
+
+EKS RBAC authorization failures
+IRSA configuration issues
+OIDC provider integration
+EBS CSI driver setup
+PVC provisioning failures
+ALB ingress issues
+Route53 propagation delays
+ArgoCD gRPC ingress issues
+Helm templating problems
+Kubernetes YAML validation issues
+📸 Suggested Screenshots
+
+Add screenshots for:
+
+Terraform apply success
+EKS cluster
+kubectl get nodes
+ArgoCD dashboard
+Running application
+Route53 records
+AWS Load Balancer
+GitHub Actions pipeline
+🎯 Key Skills Demonstrated
+Terraform Infrastructure as Code
+AWS EKS Administration
+Kubernetes Networking
+IAM & IRSA Configuration
+GitOps Architecture
+CI/CD Integration
+Kubernetes Storage Management
+AWS Load Balancing
+DNS & HTTPS Configuration
+Kubernetes Troubleshooting
+📈 Future Improvements
 
 Potential enhancements:
 
-* Prometheus & Grafana Monitoring
-* Centralized Logging (Loki / ELK)
-* Horizontal Pod Autoscaler (HPA)
-* Argo Rollouts
-* External Secrets Operator
-* Terraform Remote Backend
-* Karpenter Autoscaling
-* Multi-environment GitOps
-* Service Mesh (Istio)
-
----
-
-# 👩‍💻 Author
+Terraform remote backend (S3 + DynamoDB)
+Multi-environment deployments
+Karpenter autoscaling
+Prometheus & Grafana monitoring
+Centralized logging
+External Secrets Operator
+Argo Rollouts
+Multi-cluster GitOps
+👩‍💻 Author
 
 Tina Collins
 
